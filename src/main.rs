@@ -10,31 +10,38 @@ fn main() {
 
 fn validate_target_argument(target: String) {
     let octets: Vec<&str> = target.split('.').collect();
+    let mut octet_index: u8 = 1;
+    if octets.len() != 4 {
+        panic!("Invalid number of octets");
+    }
+
     for octet in octets {
         if octet.contains('-') {
-            validate_range(octet);
+            validate_range(octet, octet_index.clone());
         }
         else {
-            validate_octet(octet);
-        }      
+            validate_octet(octet, octet_index.clone());
+        }
+        octet_index += 1;
     }
 }
 
-fn validate_range(octet: &str) {
+fn validate_range(octet: &str, octet_index: u8) {
     let range: Vec<&str> = octet.split('-').collect();
     if range.len() != 2 {
-        panic!("Invalid range detected!");
+        panic!("Invalid range detected in octet: {}", octet_index);
     }
 
-    let range_from = range.first().expect("Invalid start of range detected!");
-    validate_octet(range_from);
-    let range_to = range.last().expect("Invalid end of range detected!");
-    validate_octet(range_to);
+    let range_from = range.first().expect("Invalid start of range in octet!");
+    validate_octet(range_from, octet_index.clone());
+    let range_to = range.last().expect("Invalid end of range in octet!");
+    validate_octet(range_to, octet_index.clone());
 }
 
-fn validate_octet(octet: &str) {
-    let is_valid = octet.parse::<i32>().is_ok();
+fn validate_octet(octet: &str, octet_index: u8) {
+    let octet_value = octet.parse::<i32>().expect("Invalid octet!");
+    let is_valid = octet_value >= 0 && octet_value <= 255;
     if !is_valid {
-        panic!("Invalid octet detected!");
+        panic!("Invalid octet detected at index: {}", octet_index);
     }
 }
