@@ -32,14 +32,14 @@ fn validate_range(octet: &str, octet_index: u8) {
         panic!("Invalid range detected in octet: {}", octet_index);
     }
 
-    let range_from = range.first().expect("Invalid start of range in octet!");
+    let range_from = range.first().expect(&("Start of range can not be empty in octet: ".to_string() + octet_index.to_string().as_str()));
     validate_octet(range_from, octet_index.clone());
-    let range_to = range.last().expect("Invalid end of range in octet!");
+    let range_to = range.last().expect(&("End of range can not be empty in octet: ".to_string() + octet.to_string().as_str()));
     validate_octet(range_to, octet_index.clone());
 }
 
 fn validate_octet(octet: &str, octet_index: u8) {
-    let octet_value = octet.parse::<i32>().expect("Invalid octet!");
+    let octet_value = octet.parse::<i32>().expect(&("Invalid number for octet: ".to_string() + octet_index.to_string().as_str()));
     let is_valid = octet_value >= 0 && octet_value <= 255;
     if !is_valid {
         panic!("Invalid octet detected at index: {}", octet_index);
